@@ -353,6 +353,7 @@ public class PluginMarker extends MyPlugin {
       
     });
   }
+ /*
   * Animate marker to specified position
   * @param args
   * @param callbackContext
