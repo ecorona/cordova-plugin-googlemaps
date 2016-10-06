@@ -285,7 +285,6 @@
     if (marker.icon) {
         anchorX = anchorX / marker.icon.size.width;
         anchorY = anchorY / marker.icon.size.height;
-        [marker setGroundAnchor:CGPointMake(anchorX, anchorY)];
     }
     [marker setInfoWindowAnchor:CGPointMake(anchorX, anchorY)];
 
@@ -692,7 +691,15 @@
 
                 range = [iconPath rangeOfString:@"file://"];
                 if (range.location != NSNotFound) {
-                    iconPath = [iconPath stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+
+                    #ifdef __CORDOVA_4_0_0
+                        NSURL *fileURL = [NSURL URLWithString:iconPath];
+                        NSURL *resolvedFileURL = [fileURL URLByResolvingSymlinksInPath];
+                        iconPath = [resolvedFileURL path];
+                    #else
+                        iconPath = [iconPath stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+                    #endif
+                    
                     NSFileManager *fileManager = [NSFileManager defaultManager];
                     if (![fileManager fileExistsAtPath:iconPath]) {
                         if (self.mapCtrl.debuggable) {
